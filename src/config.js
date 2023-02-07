@@ -3,5 +3,5 @@ import { config } from 'dotenv';
 config();
 
 export default {
-    port: 4000
+    port: process.env.PORT || 3000,
 }
