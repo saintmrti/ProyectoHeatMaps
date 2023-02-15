@@ -5,7 +5,7 @@ const dbSettings = {
     password: process.env.PASS,
     database: process.env.DB,
     server: process.env.SERVER,
-    requestTimeout: 300000
+    requestTimeout: 300000,
     // options: {
     //     encrypt: true,
     // },

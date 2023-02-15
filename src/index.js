@@ -30,8 +30,8 @@ const generateData = async () => {
             _.forEach(arraySkeletons[key], ({articulaciones, operando}) => {
                 if (operando == true) {
                     _.forEach(articulaciones, ({idParteCuerpo, puntoX, puntoY}, key) => {
-                        if ( idParteCuerpo === 16 || idParteCuerpo === 2 || idParteCuerpo === 10 ) {
-                            const coord= [parseFloat(puntoX.toFixed(2)), parseFloat(puntoY.toFixed(2))];
+                        if ( idParteCuerpo === 16 || idParteCuerpo === 10 || idParteCuerpo === 2 ) {
+                            const coord= [parseFloat(puntoX.toFixed(2)), parseFloat((puntoY).toFixed(2))];
                             cordinates.push(coord);
                         };
                     });

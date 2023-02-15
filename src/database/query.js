@@ -5,7 +5,7 @@ export const getDataArtic = async (res, req) => {
         const pool = await getConnection();
         const result1 = await pool.request().query(`
             SELECT * FROM Nuitrack_Frames 
-            WHERE fecha  >= '2023-02-03 00:00:00' AND fecha <='2023-02-03 06:00:00'
+            WHERE fecha  >= '2023-02-03 09:00:00' AND fecha <='2023-02-03 06:00:00'
         `);
         const result2 = await pool.request().query(`
             SELECT * FROM Nuitrack_Frames 
