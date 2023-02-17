@@ -33,7 +33,7 @@ app.get('/data', async (req, res) => {
         const value= dataWed.find(c => c.x == element.x && c.y == element.y);
 
         if (value === undefined) {
-            difference.push(element);
+            difference.push({coord: [element.x, element.y], count: element.percent});
         } else {
             const dif= element.percent - value.percent;
             difference.push({coord: [element.x, element.y], count: parseFloat(dif.toFixed(3))});
