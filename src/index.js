@@ -20,6 +20,7 @@ const generateData = async () => {
         const arraySkeletons= [];
         const cordinates= [];
         const grouped= {};
+        let sumCounts = 0;
         const arrayOverall= await getDataArtic();
 
         // Creamos listas de puntos en X y en Y
@@ -50,10 +51,15 @@ const generateData = async () => {
             grouped[key]++;
         });
 
+        for (const key in grouped) {
+            const count = grouped[key];
+            sumCounts += count;
+        };
+
         // Construimos la data 
         const data = Object.entries(grouped).map(([key, value]) => ({
             coord: key.split(',').map(Number),
-            count: value
+            count: parseFloat(((value / sumCounts) * 100).toFixed(3))
         }));
 
         return data;
