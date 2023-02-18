@@ -26,15 +26,29 @@
             .domain([0, d3.max(data, d => d.coord[1])])
             .range([height - margin.bottom, margin.top]);
 
+            // const negativeColorScale = d3.scaleLinear()
+            // .domain([d3.min(data, d => d.count), 0])
+            // .range(['blue', 'lightblue']);
+
+            // const positiveColorScale = d3.scaleLinear()
+            // .domain([0, d3.max(data, d => d.count) / 2, d3.max(data, d => d.count)])
+            // .range(["lightgreen", "orange", "red"])
+            // .interpolate(d3.interpolateRgb);
+
+            // const colorScale = d => d.count < 0 ? negativeColorScale(d.count) : positiveColorScale(d.count);
+
             const colorScale = d3.scaleLinear()
-            .domain([-1, -0.5, 0, 0.5, 1])
-            .range(['lightblue', 'lightgreen', 'orange', 'red'])
+            .domain([-2.058, 0, d3.max(data, d => d.count) / 2, d3.max(data, d => d.count)])
+            .range(['blue', 'lightgreen', 'orange', 'red'])
             .interpolate(d3.interpolateRgb);
+
+            console.log(d3.min(data, d => d.count));
+            console.log(d3.max(data, d => d.count));
 
             const svg = d3.select('.heatmap')
             .append('svg')
             .attr('width', width)
-            .attr('height', height)
+            .attr('height', height);
 
             svg.selectAll('circle')
             .data(data)
@@ -44,6 +58,15 @@
             .attr('cy', d => yScale(d.coord[1]))
             .attr('r', 5)
             .attr('fill', d => colorScale(d.count));
+
+            // svg.selectAll('circle')
+            // .data(data)
+            // .enter()
+            // .append('circle')
+            // .attr('cx', d => xScale(d.coord[0]))
+            // .attr('cy', d => yScale(d.coord[1]))
+            // .attr('r', 5)
+            // .attr('fill', colorScale);
         });
     </script>
 </body>
