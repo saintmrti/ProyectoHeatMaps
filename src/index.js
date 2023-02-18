@@ -45,7 +45,7 @@ const generateData = async () => {
             if(!grouped[key]){
                 // grouped[key] = [];
                 grouped[key] = 0;
-            }
+            };
             // grouped[key].push(element);
             grouped[key]++;
         });
