@@ -32,7 +32,7 @@
             // .interpolate(d3.interpolateRgb);
 
             const colorScale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.count) / 2, d3.max(data, d => d.count)])
+            .domain([0, 1.027 / 2, 1.027])
             .range(["lightgreen", "orange", "red"])
             .interpolate(d3.interpolateRgb);
 
