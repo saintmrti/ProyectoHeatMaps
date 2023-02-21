@@ -13,13 +13,25 @@ app.get('/', (req, res) => {
 });
 
 app.get('/miercoles', async (req, res) => {
-    const dataWed= await generateWednesday();
-    res.json(dataWed);
+    const dataArray= await generateWednesday();
+    const data=[];
+
+    _.map(dataArray, ({x, y, percent}) => {
+        data.push({coord: [x, y], count: percent});
+    });
+
+    res.json(data);
 });
 
 app.get('/viernes', async (req, res) => {
-    const dataFri= await generateFriday();
-    res.json(dataFri);
+    const dataArray= await generateFriday();
+    const data=[];
+
+    _.map(dataArray, ({x, y, percent}) => {
+        data.push({coord: [x, y], count: percent});
+    });
+
+    res.json(data);
 });
 
 app.get('/diferencia', async (req, res) => {
