@@ -10,57 +10,29 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-app.get('/data', async (req, res) => {
-    const data= await generateData();
+app.get('/data1', async (req, res) => {
+    const data= await generateData1();
     res.json(data);
 });
 
-const generateData = async () => {
+app.get('/data2', async (req, res) => {
+    const data= await generateData2();
+    res.json(data);
+});
+
+app.get('/data3', async (req, res) => {
+    const data= await generateData3();
+    res.json(data);
+});
+
+const generateData1 = async () => {
     try {
-        const arraySkeletons= [];
-        const cordinates= [];
-        const grouped= {};
-        let sumCounts = 0;
-        const arrayOverall= await getDataArtic();
+        const fecha= '2023-02-20';
+        const idPlano= 1;
 
-        // Creamos listas de puntos en X y en Y
-        _.forEach(arrayOverall, ({ skeletons }, key) => {
-            const json = JSON.parse(skeletons);
-            arraySkeletons.push(json);
+        const articObj= await getDataArtic(fecha, idPlano);
 
-            _.forEach(arraySkeletons[key], ({articulaciones, operando}) => {
-                if (operando == true) {
-                    _.forEach(articulaciones, ({idParteCuerpo, puntoX, puntoZ}, key) => {
-                        if ( idParteCuerpo === 16 || idParteCuerpo === 10 || idParteCuerpo === 2 ) {
-                            const coord= [parseFloat(puntoX.toFixed(2)), parseFloat((puntoZ/3500).toFixed(2))];
-                            cordinates.push(coord);
-                        };
-                    });
-                };
-            });
-        });
-
-        // Agrupamos por cordenadas
-        _.forEach(cordinates, element => {
-            const key= element.join(',');
-            if(!grouped[key]){
-                // grouped[key] = [];
-                grouped[key] = 0;
-            };
-            // grouped[key].push(element);
-            grouped[key]++;
-        });
-
-        for (const key in grouped) {
-            const count = grouped[key];
-            sumCounts += count;
-        };
-
-        // Construimos la data 
-        const data = Object.entries(grouped).map(([key, value]) => ({
-            coord: key.split(',').map(Number),
-            count: parseFloat(((value / sumCounts) * 100).toFixed(3))
-        }));
+        const data= JSON.parse(articObj[0].plano);
 
         return data;
 
@@ -68,6 +40,74 @@ const generateData = async () => {
         console.log(error);
     }
 };
+
+const generateData2 = async () => {
+    try {
+        const fecha= '2023-02-21';
+        const idPlano= 1;
+
+        const articObj= await getDataArtic(fecha, idPlano);
+
+        const data= JSON.parse(articObj[0].plano);
+
+        return data;
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const generateData3 = async () => {
+    try {
+        const arrayData1= await generateData1();
+        const arrayData2= await generateData2();
+
+        const data1=[];
+        const data2=[];
+        const difference= [];
+
+        _.map(arrayData1, ({ coord, percent }) => {
+            data1.push({x: coord[0], y: coord[1], percent})
+        });
+
+        _.map(arrayData2, ({ coord, percent }) => {
+            data2.push({x: coord[0], y: coord[1], percent})
+        });
+
+        // console.time("miPrograma");
+
+        _.forEach(data1, element => {
+            const value= data2.find(c => c.x == element.x && c.y == element.y);
+
+            if (value === undefined) {
+                difference.push({coord: [element.x, element.y], count: element.percent});
+            } else {
+                const dif= element.percent - value.percent;
+                difference.push({coord: [element.x, element.y], count: parseFloat(dif.toFixed(3))});
+            }
+        });
+
+        _.forEach(data2, element => {
+            const value= data1.find(c => c.x == element.x && c.y == element.y);
+
+            if (value === undefined) {
+                difference.push({coord: [element.x, element.y], count: element.percent});
+            } else {
+                const dif= element.percent - value.percent;
+                difference.push({coord: [element.x, element.y], count: parseFloat(dif.toFixed(3))});
+            }
+        });
+
+        // console.timeEnd("miPrograma");
+
+
+        return difference;
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
  
 

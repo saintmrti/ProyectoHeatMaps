@@ -1,61 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Calor</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-</head>
-<body>
-    <h1>Mapa de Calor</h1>
-    <div class="heatmap"></div>
-    <script>
-        fetch('/data')
-        .then(response => response.json())
-        .then(data => {
-            const width = 1000;
-            const height = 1000;
-            const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-
-            const xScale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.coord[0])])
-            .range([margin.left, width - margin.right]);
-
-            const yScale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.coord[1])])
-            .range([height - margin.bottom, margin.top]);
-
-            // const colorScale = d3.scaleLinear()
-            // .domain([0, d3.max(data, d => d.count) / 3, 2 * d3.max(data, d => d.count) / 3, d3.max(data, d => d.count)])
-            // .range(["lightgreen", "yellow", "orange", "red"])
-            // .interpolate(d3.interpolateRgb);
-
-            const colorScale = d3.scaleLinear()
-            .domain([0, 1.027 / 2, 1.027])
-            .range(["lightgreen", "orange", "red"])
-            .interpolate(d3.interpolateRgb);
-
-            console.log(d3.max(data, d => d.count));
-
-            // const colorScale = d3.scaleSequential(d3.interpolateRdYlGn)
-            // .domain([0, d3.max(data, d => d.count)]);
-
-            const svg = d3.select('.heatmap')
-            .append('svg')
-            .attr('width', width)
-            .attr('height', height);
-            // .style("border", "1px solid black");
-
-            svg.selectAll('circle')
-            .data(data)
-            .enter()
-            .append('circle')
-            .attr('cx', d => xScale(d.coord[0]))
-            .attr('cy', d => yScale(d.coord[1]))
-            .attr('r', 5)
-            .attr('fill', d => colorScale(d.count));
-        });
-    </script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mapas de Calor</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.standalone.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+        <!-- CSS -->
+        <link rel="stylesheet" href="/styles/main.css">
+    </head>
+    <body class="bg-dark" class="uno">
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="col-md-12 text-info text-center mb-3 mt-3 h2">Mapas de Calor</h1>
+                <div class="col-md-12 d-flex justify-content-center align-items-center mb-5">
+                    <h5 class="text-light">Selecciona una fecha:</h5>
+                    <div class="d-inline-flex p-2">
+                        <input type="text" id="fecha" class="form-control" placeholder="02/20/23">
+                        <button type="submit" class="btn btn-light ms-2"><i class="bi bi-check-lg"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-light text-center">Miercoles anterior</h5>
+                    <div id="heatmap1" class="heatmap"></div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-light text-center">Día seleccionado</h5>
+                    <div id="heatmap2" class="heatmap"></div>
+                </div>
+                <div class="col-md-12">
+                    <h5 class="text-light text-center">Diferencia</h5>
+                    <div id="heatmap3" class="heatmap"></div>
+                </div>
+            </div>
+        </div>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+        <script src="/js/script.js"></script>
+    </body>
 </html>
