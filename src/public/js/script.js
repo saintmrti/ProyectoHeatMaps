@@ -131,28 +131,40 @@ function setAvailable() {
         fetch('/available')
         .then(response => response.json())
         .then(data => {
+            const div1 = document.getElementById("textA1");
+            const div2 = document.getElementById("textA2");
 
-            if (data.hasOwnProperty('dis_miercoles')) {
-                let div1 = document.getElementById("textA1");
-                let div2 = document.getElementById("textA2");
+            div1.innerHTML= "";
+            div2.innerHTML= "";
 
-                div1.innerHTML = `<p id="textA1">${data.dis_miercoles}%</p>`;
-                div2.innerHTML = `<p id="textA2">No Disponible</p>`;
-            } 
+            switch (true) {
+                case (data.dis_miercoles > 40):
+                  div1.innerHTML = `<p id="textA1" class="text-success">${data.dis_miercoles}%</p>`;
+                  break;
+                case (data.dis_miercoles > 30 && data.dis_miercoles < 40):
+                  div1.innerHTML = `<p id="textA1" class="text-warning">${data.dis_miercoles}%</p>`;
+                  break;
+                case (data.dis_miercoles > 0  && data.dis_miercoles < 30):
+                  div1.innerHTML = `<p id="textA1" class="text-danger">${data.dis_miercoles}%</p>`;
+                  break;
+                case (data.dis_miercoles == 0):
+                  div1.innerHTML = `<p id="textA1">No existe</p>`;
+                  break;
+            }
 
-            if (data.hasOwnProperty('dis_selec')) {
-                let div1 = document.getElementById("textA1");
-                let div2 = document.getElementById("textA2");
-
-                div1.innerHTML = `<p id="textA1">No disponible</p>`;
-                div2.innerHTML = `<p id="textA2">${data.dis_selec}%</p>`;
-            } 
-            else {
-                let div1 = document.getElementById("textA1");
-                let div2 = document.getElementById("textA2");
-
-                div1.innerHTML = `<p id="textA1">No Disponible</p>`;
-                div2.innerHTML = `<p id="textA2">No Disponible</p>`;
+            switch (true) {
+                case (data.dis_selec > 40):
+                  div2.innerHTML = `<p id="textA2" class="text-success">${data.dis_selec}%</p>`;
+                  break;
+                case (data.dis_selec > 30 && data.dis_selec < 40):
+                  div2.innerHTML = `<p id="textA2" class="text-warning">${data.dis_selec}%</p>`;
+                  break;
+                case (data.dis_selec > 0 && data.dis_selec < 30):
+                  div2.innerHTML = `<p id="textA2" class="text-danger">${data.dis_selec}%</p>`;
+                  break;
+                case (data.dis_selec == 0):
+                  div2.innerHTML = `<p id="textA2">No existe</p>`;
+                  break; 
             }
         });
     } catch (error) {
@@ -188,13 +200,13 @@ fechaForm.addEventListener('submit', (event) => {
     const planoSeleccionado= planoInput.value;
     const content = document.querySelectorAll('.contenedor');
 
-    if (planoSeleccionado == 1) {
+    if (planoSeleccionado == "XY") {
         fetch('/endpoint', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify({fecha: fechaSeleccionada, plano: planoSeleccionado})
+            body: JSON.stringify({fecha: fechaSeleccionada, plano: 1})
         })
         .then(response => {
             response.json();
@@ -231,13 +243,13 @@ fechaForm.addEventListener('submit', (event) => {
         setAvailable();
     };
 
-    if (planoSeleccionado == 2) {
+    if (planoSeleccionado == "XZ") {
         fetch('/endpoint', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify({fecha: fechaSeleccionada, plano: planoSeleccionado})
+            body: JSON.stringify({fecha: fechaSeleccionada, plano: 2})
         })
         .then(response => {
             response.json();

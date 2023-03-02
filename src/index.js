@@ -154,7 +154,9 @@ const generateAvailable = async (fecha) => {
 
             const value= (disponibilidad/horasProd) * 100;
 
-            return value.toFixed(2);
+            if (isFinite(value)) return parseFloat(value.toFixed(2));
+            
+            return 0;
         }
         
 
