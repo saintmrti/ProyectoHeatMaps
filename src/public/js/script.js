@@ -1,114 +1,90 @@
-fetch('/data1')
-.then(response => response.json())
-.then(data => {
-    function update() {
-        const container = document.querySelector('.heatmap');
-        const containerRect = container.getBoundingClientRect();
-        const width = containerRect.width;
-        const height = containerRect.height;
+function drawHeatMaps() {
+    let maxP= 0.600;
 
-        const margin = { top: 20, right: 0, bottom: 30, left: 0  };
+    fetch('/data1')
+    .then(response => response.json())
+    .then(data => {
+        update(data, '#heatmap1', maxP);
+        // window.addEventListener('resize', update);
+    });
 
-        console.log(width);
-        console.log(height);
+    fetch('/data2')
+    .then(response => response.json())
+    .then(data => {
+        update(data, '#heatmap2', maxP);
+    });
 
-        const maxX = d3.max(data, d => d.coord[0]);
-        const maxY = d3.max(data, d => d.coord[1]);
+    fetch('/data3')
+    .then(response => response.json())
+    .then(data => {
+        updateDiff(data, maxP);
+    });
+};
 
-        const xScale = d3.scaleLinear()
-        .domain([0, maxX])
-        .range([margin.left, width - margin.right]);
+function update(data, chartId, maxPercent) {
+   try {
 
-        const yScale = d3.scaleLinear()
-        .domain([0, maxY])
-        .range([height - margin.bottom, margin.top]);
+        if (JSON.stringify(data) === '{}') {
+            console.log('La respuesta es un objeto JSON vacío');
+        } else {
+            // const container = document.querySelector('.heatmap');
+            // const containerRect = container.getBoundingClientRect();
+            // const width = containerRect.width;
+            // const height = containerRect.height;
+            // console.log(width);
+            // console.log(height);
+            const width = 742;
+            const height = 929;
+            const margin = { top: 20, right: 0, bottom: 30, left: 0  };
 
-        const colorScale = d3.scaleLinear()
-        .domain([0, 0.583 / 2, 0.583])
-        .range(["lightgreen", "orange", "red"])
-        .interpolate(d3.interpolateRgb);
+            const maxX = d3.max(data, d => d.coord[0]);
+            const maxY = d3.max(data, d => d.coord[1]);
 
-        // console.log(d3.max(data, d => d.percent));
+            const xScale = d3.scaleLinear()
+            .domain([0, maxX])
+            .range([margin.left, width - margin.right]);
 
-        const svg = d3.select('#heatmap1')
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('viewBox', `180 0 ${width} ${height - 200}`)
-        .style("transform", "rotate(180deg) scale(-1,1)");
+            const yScale = d3.scaleLinear()
+            .domain([0, maxY])
+            .range([height - margin.bottom, margin.top]);
 
-        svg.selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-        .attr('cx', d => xScale(d.coord[0]))
-        .attr('cy', d => yScale(d.coord[1]))
-        .attr('r', 5)
-        .attr('fill', d => colorScale(d.percent));
-    }
+            const colorScale = d3.scaleLinear()
+            .domain([0, maxPercent / 2, maxPercent])
+            .range(["lightgreen", "orange", "red"])
+            .interpolate(d3.interpolateRgb);
 
-    update();
-    // window.addEventListener('resize', update);
-});
+            // console.log(d3.max(data, d => d.percent));
 
-fetch('/data2')
-.then(response => response.json())
-.then(data => {
-    function update() {
-        const container = document.querySelector('.heatmap');
-        const containerRect = container.getBoundingClientRect();
-        const width = containerRect.width;
-        const height = containerRect.height;
+            const svg = d3.select(chartId)
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('viewBox', `180 0 ${width - 50} ${height - 350}`)
+            .style("transform", "rotate(180deg) scale(-1,1)");
 
-        const margin = { top: 20, right: 0, bottom: 30, left: 0  };
+            svg.selectAll('circle')
+            .data(data)
+            .enter()
+            .append('circle')
+            .attr('cx', d => xScale(d.coord[0]))
+            .attr('cy', d => yScale(d.coord[1]))
+            .attr('r', 5)
+            .attr('fill', d => colorScale(d.percent));
+        }
+   } catch (error) {
+        console.log(error)
+   }
+};
 
-        const maxX = d3.max(data, d => d.coord[0]);
-        const maxY = d3.max(data, d => d.coord[1]);
+function updateDiff(data, maxPercent) {
+    try {
+        // const container = document.querySelector('.heatmap');
+        // const containerRect = container.getBoundingClientRect();
+        // const width = containerRect.width;
+        // const height = containerRect.height;
 
-        const xScale = d3.scaleLinear()
-        .domain([0, maxX])
-        .range([margin.left, width - margin.right]);
-
-        const yScale = d3.scaleLinear()
-        .domain([0, maxY])
-        .range([height - margin.bottom, margin.top]);
-
-        const colorScale = d3.scaleLinear()
-        .domain([0, 0.583 / 2, 0.583])
-        .range(["lightgreen", "orange", "red"])
-        .interpolate(d3.interpolateRgb);
-
-        // console.log(d3.max(data, d => d.percent));
-
-        const svg = d3.select('#heatmap2')
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('viewBox', `180 0 ${width} ${height - 200}`)
-        .style("transform", "rotate(180deg) scale(-1,1)");
-
-        svg.selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-        .attr('cx', d => xScale(d.coord[0]))
-        .attr('cy', d => yScale(d.coord[1]))
-        .attr('r', 5)
-        .attr('fill', d => colorScale(d.percent));
-    }
-
-    update();
-});
-
-fetch('/data3')
-.then(response => response.json())
-.then(data => {
-    function update() {
-        const container = document.querySelector('.heatmap');
-        const containerRect = container.getBoundingClientRect();
-        const width = containerRect.width;
-        const height = containerRect.height;
-
+        const width = 742;
+        const height = 929;
         const margin = { top: 20, right: 0, bottom: 30, left: 0  };
 
         const maxX = d3.max(data, d => d.coord[0]);
@@ -123,17 +99,18 @@ fetch('/data3')
         .range([height - margin.bottom, margin.top]);
 
         const colorScale = d3.scaleLinear()
-        .domain([-0.583, 0, 0.583 / 2, 0.583])
+        .domain([-maxPercent, 0, maxPercent / 2, maxPercent])
         .range(['blue', 'lightgreen', 'orange', 'red'])
         .interpolate(d3.interpolateRgb);
 
+        // console.log(d3.min(data, d => d.percent));
         // console.log(d3.max(data, d => d.percent));
 
         const svg = d3.select('#heatmap3')
         .append('svg')
         .attr('width', width)
         .attr('height', height)
-        .attr('viewBox', `180 0 ${width} ${height - 200}`)
+        .attr('viewBox', `180 0 ${width - 50} ${height - 350}`)
         .style("transform", "rotate(180deg) scale(-1,1)");
 
         svg.selectAll('circle')
@@ -144,17 +121,51 @@ fetch('/data3')
         .attr('cy', d => yScale(d.coord[1]))
         .attr('r', 5)
         .attr('fill', d => colorScale(d.percent));
+    } catch (error) {
+        console.log(error);
     }
+};
 
-    update();
-});
+function setAvailable() {
+    try {
+        fetch('/available')
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.hasOwnProperty('dis_miercoles')) {
+                let div1 = document.getElementById("textA1");
+                let div2 = document.getElementById("textA2");
+
+                div1.innerHTML = `<p id="textA1">${data.dis_miercoles}%</p>`;
+                div2.innerHTML = `<p id="textA2">No Disponible</p>`;
+            } 
+
+            if (data.hasOwnProperty('dis_selec')) {
+                let div1 = document.getElementById("textA1");
+                let div2 = document.getElementById("textA2");
+
+                div1.innerHTML = `<p id="textA1">No disponible</p>`;
+                div2.innerHTML = `<p id="textA2">${data.dis_selec}%</p>`;
+            } 
+            else {
+                let div1 = document.getElementById("textA1");
+                let div2 = document.getElementById("textA2");
+
+                div1.innerHTML = `<p id="textA1">No Disponible</p>`;
+                div2.innerHTML = `<p id="textA2">No Disponible</p>`;
+            }
+        });
+    } catch (error) {
+        console.log(error)
+    }
+};
 
 $(document).ready(function(){
     $('#fecha').datepicker({
-        format: "dd/mm/yyyy", // Formato de la fecha
-        autoclose: true, // Cierra automáticamente el calendario al seleccionar una fecha
-        todayHighlight: true, // Destaca la fecha actual en el calendario
-        language: "es", // Idioma del calendario
+        format: "dd/mm/yyyy",
+        autoclose: true, 
+        todayHighlight: true,
+        language: "es", 
         templates: {
             leftArrow: '<i class="bi bi-arrow-left"></i>',
             rightArrow: '<i class="bi bi-arrow-right"></i>'
@@ -165,3 +176,103 @@ $(document).ready(function(){
         toggleActive: true,
     });
 });
+
+const fechaForm = document.querySelector('#fecha-form');
+const fechaInput = document.querySelector('#fecha');
+const planoInput = document.querySelector('#plano');
+
+fechaForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const fechaSeleccionada= fechaInput.value;
+    const planoSeleccionado= planoInput.value;
+    const content = document.querySelectorAll('.contenedor');
+
+    if (planoSeleccionado == 1) {
+        fetch('/endpoint', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({fecha: fechaSeleccionada, plano: planoSeleccionado})
+        })
+        .then(response => {
+            response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        let heatmap1 = document.getElementById("heatmap1");
+        let heatmap2 = document.getElementById("heatmap2");
+        let heatmap3 = document.getElementById("heatmap3");
+
+        heatmap1.classList.remove('heatmap2');
+        heatmap2.classList.remove('heatmap2');
+        heatmap3.classList.remove('heatmap2');
+
+        heatmap1.className = 'heatmap';
+        heatmap2.className = 'heatmap';
+        heatmap3.className = 'heatmap';
+        
+        heatmap1.innerHTML = "";
+        heatmap2.innerHTML = "";
+        heatmap3.innerHTML = "";
+
+        content.forEach(function(elemento) {
+            elemento.innerHTML = "";
+            elemento.innerHTML = `<img src="/img/XY_T.png" alt="" class="imagenS">`;
+        });
+
+        drawHeatMaps();
+        setAvailable();
+    };
+
+    if (planoSeleccionado == 2) {
+        fetch('/endpoint', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({fecha: fechaSeleccionada, plano: planoSeleccionado})
+        })
+        .then(response => {
+            response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        let heatmap1 = document.getElementById("heatmap1");
+        let heatmap2 = document.getElementById("heatmap2");
+        let heatmap3 = document.getElementById("heatmap3");
+
+        heatmap1.classList.remove('heatmap');
+        heatmap2.classList.remove('heatmap');
+        heatmap3.classList.remove('heatmap');
+
+        heatmap1.className = 'heatmap2';
+        heatmap2.className = 'heatmap2';
+        heatmap3.className = 'heatmap2';
+        
+        heatmap1.innerHTML = "";
+        heatmap2.innerHTML = "";
+        heatmap3.innerHTML = "";
+        content.forEach(function(elemento) {
+            elemento.innerHTML = "";
+            elemento.innerHTML = `<img src="/img/XZ_T.png" alt="" class="imagenS">`;
+        });
+
+        drawHeatMaps();
+        setAvailable();
+    }
+});
+
+drawHeatMaps();
+setAvailable();

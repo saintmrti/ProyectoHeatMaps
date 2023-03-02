@@ -16,26 +16,57 @@
         <div class="container-fluid">
             <div class="row">
                 <h1 class="col-md-12 text-info text-center mb-3 mt-3 h2">Mapas de Calor</h1>
-                <div class="col-md-12 d-flex justify-content-center align-items-center mb-5">
-                    <h5 class="text-light">Selecciona una fecha:</h5>
-                    <div class="d-inline-flex p-2">
-                        <input type="text" id="fecha" class="form-control" placeholder="02/20/23">
-                        <button type="submit" class="btn btn-light ms-2"><i class="bi bi-check-lg"></i></button>
+                <form id="fecha-form" action="/procesar-fecha" method="POST" class="col-md-12 d-flex justify-content-center align-items-center mb-5">
+                    <h5 class="text-light">Fecha:</h5>
+                    <div class="d-inline-flex ps-2">
+                        <input type="text" id="fecha" name="fecha" class="form-control" placeholder="Selecciona una fecha" autocomplete="off">
                     </div>
-                </div>
+                    <h5 class="text-light ms-2">Plano:</h5>
+                    <div class="d-inline-flex ps-2">
+                        <input type="text" id="plano" name="plano" class="form-control" placeholder="Selecciona un plano">
+                    </div>
+                    <button type="submit" class="btn btn-light ms-2"><i class="bi bi-check-lg"></i></button>
+                </form>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <h5 class="text-light text-center">Miercoles anterior</h5>
-                    <div id="heatmap1" class="heatmap"></div>
+                    <div class="d-flex justify-content-center text-light">
+                        <p>Disponibilidad: &#160</p>
+                        <p id="textA1">0%</p>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <h5 class="text-light text-center">Día seleccionado</h5>
-                    <div id="heatmap2" class="heatmap"></div>
+                    <div class="d-flex justify-content-center text-light">
+                        <p>Disponibilidad: &#160</p>
+                        <p id="textA2">0%</p>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <h5 class="text-light text-center">Diferencia</h5>
-                    <div id="heatmap3" class="heatmap"></div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="contenedor">
+                            <img src="/img/XY_T.png" alt="" class="imagenS">
+                        </div>
+                        <div id="heatmap1" class="heatmap"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="contenedor">
+                            <img src="/img/XY_T.png" alt="" class="imagenS">
+                        </div>
+                        <div id="heatmap2" class="heatmap"></div>
+                    </div>
+                </div>
+                <h5 class="text-light text-center mb-5">Diferencia</h5>
+                <div class="col-md-12 d-flex justify-content-center">
+                    <div class="col-md-6 d-flex">
+                        <div class="contenedor">
+                            <img src="/img/XY_T.png" alt="" class="imagenS">
+                        </div>
+                        <div id="heatmap3" class="heatmap"></div>
+                    </div>
                 </div>
             </div>
         </div>
